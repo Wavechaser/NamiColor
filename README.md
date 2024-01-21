@@ -3,6 +3,7 @@
 ## Installation:
 
 Just simply put the DCTL in the DaVinci Resolve's LUT filder:
+
 Windows - C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\
 macOS - ~/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/
 
@@ -11,6 +12,7 @@ Relaunch Resolve, and load the script in a DCTL node (requires Studio version).
 ## How NamiColor Works
 
 WIP.
+
 
 ## Using NamiColor
 
