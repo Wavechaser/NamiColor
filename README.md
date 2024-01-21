@@ -3,15 +3,18 @@
 ## Installation:
 
 Just simply put the DCTL in the DaVinci Resolve's LUT filder:
+
 Windows - C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\
 macOS - ~/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/
 
 Relaunch Resolve, and load the script in a DCTL node (requires Studio version).
 
 
+
 ## Using NamiColor
 
 WIP.
+
 
 
 ## Changelog:
@@ -38,6 +41,7 @@ WIP.
 
 ### NamiColor 3.0
 - Integrated Adobe RGB and ProPhoto RGB to Rec. 2020 transform options at import.
+
 
 
 ## MIT License
