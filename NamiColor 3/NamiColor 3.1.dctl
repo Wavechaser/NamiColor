@@ -1,6 +1,6 @@
-// Original concept by HikariDragon, current code by Wavechaser. 
+// NAMICOLOR 3.1
 
-// NAMICOLOR 3.0
+// Original concept by HikariDragon, current code by Wavechaser. 
 
 // DEFINE_UI_PARAMS([variable name], [label], DCTLUI_SLIDER_FLOAT, [default value], [min value], [max value], [step])
 // DEFINE_UI_PARAMS([variable name], [label], DCTLUI_COMBO_BOX,    [default value], [enum list], [enum label list])
@@ -35,6 +35,8 @@ DEFINE_UI_PARAMS(B_shift,       B Shift,            DCTLUI_SLIDER_FLOAT,    0.0,
 
 // Cineon lift
 DEFINE_UI_PARAMS(postLift,  Fit to Cineon Base, DCTLUI_CHECK_BOX,   0)
+
+// __DEVICE__ float3 
 
 
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
