@@ -34,7 +34,7 @@ DEFINE_UI_PARAMS(B_gain,        B Gain,             DCTLUI_SLIDER_FLOAT,    0.0,
 DEFINE_UI_PARAMS(B_shift,       B Shift,            DCTLUI_SLIDER_FLOAT,    0.0, -1.0, 1.0, 0.001)
 
 // Cineon lift
-DEFINE_UI_PARAMS(postLift,  Fit to Cineon Base, DCTLUI_CHECK_BOX,   0)
+DEFINE_UI_PARAMS(postLift,      Fit to Cineon Base, DCTLUI_CHECK_BOX,   0)
 
 // __DEVICE__ float3 
 
@@ -66,7 +66,7 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     float g_init;
     float b_init;
 
-    if (inputType == neg || inputType == rev)
+    if (inputType == neg)
     {
         r_init = invScale * (_log10f (inputScale * p_R));
         g_init = invScale * (_log10f (inputScale * p_G));
@@ -75,6 +75,17 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
         r_init = (r_init * inputGain) + 1.0f;
         g_init = (g_init * inputGain) + 1.0f;
         b_init = (b_init * inputGain) + 1.0f;
+    }
+
+    if (inputType == rev)
+    {
+        r_init = invScale * (_log10f (inputScale * p_R));
+        g_init = invScale * (_log10f (inputScale * p_G));
+        b_init = invScale * (_log10f (inputScale * p_B));
+
+        r_init = (r_init * inputGain) + 0.8f;
+        g_init = (g_init * inputGain) + 0.8f;
+        b_init = (b_init * inputGain) + 0.8f;
     }
     
     if (inputType == pfe)
