@@ -1,6 +1,7 @@
 // NAMICOLOR 3.1
 
 // Original concept by HikariDragon, current code by Wavechaser. 
+// Distributed under the GPL 3.0 license.
 
 // DEFINE_UI_PARAMS([variable name], [label], DCTLUI_SLIDER_FLOAT, [default value], [min value], [max value], [step])
 // DEFINE_UI_PARAMS([variable name], [label], DCTLUI_COMBO_BOX,    [default value], [enum list], [enum label list])

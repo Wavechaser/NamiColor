@@ -10,18 +10,24 @@
 
 ## What NamiColor Does
 
+
+
 ## How NamiColor Works
 
-Your pain of finding black, white, and gray points in traditional ways of color transforming a film scan comes 
+Your pain of finding black, white, and gray points in traditional ways of color transforming a film scan comes form the fact that you are doing it in the wrong space.
 
+On most films' datasheets, you would usually find a characteristic curve like the one below. Note that the linear portion of each channel are in fact straight, and is only offset from each other by some amount in log<sub>10</sub> space. 
 
+This is not the case in linear (or otherwise low gamma) space. 
 
 
 ## Using NamiColor
 
 ### Recommeneded Hardware
 
-NamiColor is not a compute-intensive script. If you are dealing with stills, then realtime rendering requirements should be low enough to run on most mainstream-ish hardwares. If you are dealing with motion pictures, then it's rather likely that their resolutions would be low enough to not impose a problem.
+NamiColor is not a compute-intensive script. It does not ask for more compute power than applying a LUT or two. Given the resolution of most film scans, NamiColor should run on most mainstream hardwares from the past couple of years.
+
+Even for very high resolution inputs, realtime rendering requirements should be low enough to run on most mainstream-ish hardwares. If you are dealing with motion pictures, then it's rather likely that their resolutions would be low enough to not impose a problem.
 
 However, by Resolve's nature of loading entire chunks of the timeline into the VRAM, using Resolve to color transform film scans will be very memory intensive regardless of using NamiColor or not.
 
@@ -80,7 +86,7 @@ If your input image is neither, please still try to manage it somehow. You are u
 First, use master controls to fit the range of input roughly into the 0-1 floatpoint space. Refer to your waveform and other scopes to determine where your code values are. Don't worry about not being exact, there are second chances. 
 
 > [!NOTE]
-> Always drag the number box in the DCTL UI. The graphical slider themselves tend to be overly sensitive.
+> Always drag the number box in the DCTL UI. The graphical sliders tend to be overly sensitive.
 
 #### Input Scaling
 
@@ -95,9 +101,12 @@ If you are dealing with negatives, chances are you don't have to do very much. S
 If you are dealing with reversals, you may have to decrease `input gain` somewhat.
 
 > [!NOTE]
-> The key is, again, to fit everything inside 0-1 space. 
+> The key is, again, to fit everything inside the 0-1 range. 
 
 Being essentially an IDT, you would want NamiColor to capture and prepare a digital intermediate with the full scene information. Therefore, the goal of NamiColor is not necessarily to get the "correct exposure" at this stage, but to retain as much dynamic range as possible. You can always readjust exposure in later nodes.
+
+But if you don't have an excessive amount of highlights to cram between 0-1, you don't necessarily have to stretch your white all the way to the top. This is by all means optional, but it could make exposure adjustment a bit easier. Cineon defines gray at 470/1023 and diffuse white at 685/1023, so use your best judgement determining where your highlights go, given you can fit all the data in range.
+
 
 #### Channel Alignment
 
@@ -108,6 +117,9 @@ You may continue to fine tune each channel's `blackpoint` and `gain` to get a mo
 You are done after the blackpoints and whitepoints of each channel are aligned. There is no finding gray point.
 
 Blacks, whites, done. Just like that.
+
+> [!NOTE]
+> Make sure you check `fit to Cineon base` after you believe your channels have been reasonably aligned.
 
 
 ### After NamiColor
@@ -156,8 +168,8 @@ By setting each clip (assuming you are processing stills) to be 1 frame long, an
 
 ### NamiColor 2.0
 - Added `Reversals` processing mode.
-- Added shift control to each individual channel.
-- Added `fit to Cineon base` option to allow switching between 0/0 blackpoint and Cineon blackpoint on the fly.
+- Added `shift` control to each individual channel.
+- Added `fit to Cineon base` option.
 
 ### NamiColor 1.0
 - Rewrote customLog.
