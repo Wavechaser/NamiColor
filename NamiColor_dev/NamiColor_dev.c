@@ -1,6 +1,6 @@
 // NAMICOLOR 3.1
 
-// Original concept by HikariDragon, current code by Wavechaser. 
+// Original concept by HikariDragon, currently maintained by Wavechaser. 
 // Distributed under the GPL 3.0 license.
 
 // DEFINE_UI_PARAMS([variable name], [label], DCTLUI_SLIDER_FLOAT, [default value], [min value], [max value], [step])
@@ -10,6 +10,9 @@
 
 // Process mode
 DEFINE_UI_PARAMS(inputType,     Input Type,         DCTLUI_COMBO_BOX,       0, {neg, rev, pfe}, {Negatives, Reversals, Log-to-Log})
+
+// Input gamma
+DEFINE_UI_PARAMS(inputEOTF,     Input Gamma,        DCTLUI_COMBO_BOX,       0, {lin, gamma}, {Linear, Gamma 2.2})
 
 // Input color space
 DEFINE_UI_PARAMS(inputColor,    Input Color Space,  DCTLUI_COMBO_BOX,       0, {AdobeRGB, ProPhotoRGB, bypass}, {Adobe RGB, ProPhoto RGB (D65), Bypass})
@@ -37,7 +40,7 @@ DEFINE_UI_PARAMS(B_shift,       B Shift,            DCTLUI_SLIDER_FLOAT,    0.0,
 // Cineon lift
 DEFINE_UI_PARAMS(postLift,      Fit to Cineon Base, DCTLUI_CHECK_BOX,   0)
 
-// __DEVICE__ float3 
+__DEVICE__ float3 
 
 
 __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p_R, float p_G, float p_B)
@@ -61,7 +64,8 @@ __DEVICE__ float3 transform(int p_Width, int p_Height, int p_X, int p_Y, float p
     float inputScale = inputType == neg ? 16.0f : 1.0f;
 	float invScale   = inputType == neg ? -1.0f : 1.0f;
 
-    // Imports input into log space. Bypasses log10f() if pfe is chosen.
+    // Converts transmission to density by performing a log10f()
+    // Bypasses log10f() if pfe is chosen.
     // Then fits input into (0, 1) range. No +1.0f offset is needed for pfe.
     float r_init;
     float g_init;

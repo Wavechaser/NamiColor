@@ -1,24 +1,25 @@
 # NamiColor
 
-## Who is NamiColor for
-
-- People who care about both fidelity and beauty.
-- People who want to take the guesswork out of the workflow.
-- People who have an obscene amount of film scans to deal with.
-- People who have experiences with scene-referred color pipelines.
-- People who have access to DaVinci Resolve Studio.
-
 ## What NamiColor Does
 
+NamiColor is designed to allow you to take full ownership of your film images.
+
+Like digital sensors, film is nothing but a device of acquisition. In either format, the acquisition device captures and transports a slice of the scene in an intermediate form. Given that this intermediate image retains enough resolution, dynamic range, and color, it grants the possibility of being transformed into any desired look. 
+
+With that being said, film in and of itself, is not an end, but merely means to it. Obviously, different emulsions and different filmstocks can *influence* the final image, but should by no way, shape, or form *determine* your looks. 
+
+To make film sufficiently workable in post, the scan needs to be transformed from transmission to density, and to have its channels aligned, all while maintaining scene-linearity. NamiColor is designed to do just that by acting as an ingest node for scanned film images. 
+
+By linearizing film in the density domain, NamiColor also removes the guesswork in traditional workflows. There will be no more fiddling with finding the gray point. Having Resolve as its host application also allows NamiColor to be extremely scalable, suitable for dealing with an obscene amounts of film scans. 
 
 
 ## How NamiColor Works
 
-Your pain of finding black, white, and gray points in traditional ways of color transforming a film scan comes form the fact that you are doing it in the wrong space.
+Film scanners (flatbed or camera) measure transmission, not directly density. To work in density domain, a log<sub>10</sub> scaling is required.
 
 On most films' datasheets, you would usually find a characteristic curve like the one below. Note that the linear portion of each channel are in fact straight, and is only offset from each other by some amount in log<sub>10</sub> space. 
 
-This is not the case in linear (or otherwise low gamma) space. 
+This is not the case in linear/transmission space. 
 
 
 ## Using NamiColor
@@ -31,9 +32,11 @@ Even for very high resolution inputs, realtime rendering requirements should be 
 
 However, by Resolve's nature of loading entire chunks of the timeline into the VRAM, using Resolve to color transform film scans will be very memory intensive regardless of using NamiColor or not.
 
-- For 135 scans (10-20MP), 8-12GB of VRAM should be enough.
-- For 120 scans (40-60MP), 16-24GB is recommended.
+- For 135 scans (10-20MP), 8GB of VRAM should be enough.
+- For 120 scans (40-60MP), 12-16GB is recommended.
 - If you are shooting large formats (100-200MP) at this day and age, I am assuming you can afford a GPU with at least 24GB of VRAM.
+
+Being an DCTL script, NamiColor will require DaVinci Resolve Studio to run. It is tested to be compatible with Resolve 17 and later.
 
 
 ### Installation
@@ -45,8 +48,6 @@ Windows - `C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\LUT\`
 macOS - `~/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/`
 
 Relaunch Resolve, apply `DCTL OFX` to a node, and load `NamiColor` in the `DCTL list` dropdown.
-
-Should be compatible with Resolve 17 Studio and later.
 
 
 ### Preparing Input Files
@@ -78,7 +79,7 @@ If your input image is in a color space NamiColor knows how to manage (Adobe RGB
 
 If your input image is in a color space native to Resolve (ACES, Rec. 2020, P3, sRGB, etc.), NamiColor should also be your first node. Select `bypass` in the input color space dropdown and you are good to go. In this case, NamiColor will not perform any color space transform. Any subsquent nodes and the ODT should be configured for the same color space as the input. 
 
-If your input image is neither, please still try to manage it somehow. You are using Resolve, not Photoshop. Manage your colors. Add any necessary CST, LUT, DCTL, dark magic, sorcery, or mango smoothie **before** Namicolor, and select `bypass` in the input color space dropdown. Note that linear transformations are not commutative, managing your input after NamiColor may not yield correct results.
+If your input image is neither, please still try to manage it somehow. You are using Resolve, not Photoshop. Manage your colors. Add any necessary CST, LUT, DCTL, dark magic, sorcery, or mango smoothie **before** NamiColor, and select `bypass` in the input color space dropdown. 
 
 
 ### Color Transforming Film Images
@@ -105,18 +106,18 @@ If you are dealing with reversals, you may have to decrease `input gain` somewha
 
 Being essentially an IDT, you would want NamiColor to capture and prepare a digital intermediate with the full scene information. Therefore, the goal of NamiColor is not necessarily to get the "correct exposure" at this stage, but to retain as much dynamic range as possible. You can always readjust exposure in later nodes.
 
-But if you don't have an excessive amount of highlights to cram between 0-1, you don't necessarily have to stretch your white all the way to the top. This is by all means optional, but it could make exposure adjustment a bit easier. Cineon defines gray at 470/1023 and diffuse white at 685/1023, so use your best judgement determining where your highlights go, given you can fit all the data in range.
+But if you don't have an excessive amount of highlights to cram between 0-1, you don't necessarily have to stretch your white all the way to the top. This is by all means optional, but it could make exposure adjustments a bit easier. Cineon defines gray at 470/1023 and diffuse white at 685/1023, so use your best judgements determining how you scale the input, given you can fit all the data in range.
 
 
 #### Channel Alignment
 
 There are no single correct way of aligning your RGB channels. I personally recommend using `offset` to align the black levels of each channel, and using `gain` to finish aligning the highlights. But I am not going to stop you from using `blackpoint` and `gain` to stretch each channel in place. Whatever works.
 
-You may continue to fine tune each channel's `blackpoint` and `gain` to get a more reasonable result. Especially for negatives where the B channel/Y dye layer has the steepest curve and less SNR, pulling `B Blackpoint` slighly below that of R and G channels' tend to yield more balanced shadows.
+Use common sense when aligning channels. Finding a relatively neutral black and highlight point is highly recommended, even if it may not be imperative. For example, if your highlight is the sky, you would not want that to be your alignment reference, or else everything would look very yellow. You would want to find another reference for that. The good thing is, even if you can't find a reasonable highlight/black reference in a frame, setups from other frames on the same roll with similar lighting conditions would likely be usable. Just copy your grades.
+
+You may continue to fine tune each channel's `blackpoint` and `gain` to get a more reasonable result. Especially for negatives where the B channel/Y dye layer tends to have the steepest curve and least SNR, pulling `B Blackpoint` slighly below that of R and G channels' tend to yield more balanced shadows.
 
 You are done after the blackpoints and whitepoints of each channel are aligned. There is no finding gray point.
-
-Blacks, whites, done. Just like that.
 
 > [!NOTE]
 > Make sure you check `fit to Cineon base` after you believe your channels have been reasonably aligned.
@@ -172,8 +173,8 @@ By setting each clip (assuming you are processing stills) to be 1 frame long, an
 - Added `fit to Cineon base` option.
 
 ### NamiColor 1.0
-- Rewrote customLog.
+- Rewrote RemoveColorMask.
 - Cleaned up variables.
 
-### customLog
-- Initial concept by HikariDragon.
+### RemoveColorMask
+- Initial concept by @OwenYou .
