@@ -84,17 +84,17 @@ Select a corresponding processing mode. `Negatives` and `Reversals` should be ra
 
 NamiColor can manage the input in 3 ways.
 
-- NamiColor managed: Adobe RGB/ProPhoto RGB & linear input, Rec. 2020 & Cineon output. 
+- NamiColor managed: Adobe RGB/ProPhoto RGB & linear input, Rec. 2020 & Cineon output.
 
-If your input image is linear and in a color space NamiColor knows how to manage, then NamiColor should be your first node. Simply select the corresponding color space in the input color space dropdown. 
+  If your input image is linear and in a color space NamiColor knows how to manage, then NamiColor should be your first node. Simply select the corresponding color space in the input color space dropdown. 
 
 - Resolve managed: Resolve-native color space (ACES, Rec. 2020, P3, sRGB, etc.) & linear input, outputs same color space as input & Cineon Film Log.
 
-In this case, NamiColor should also be your first node. Select `bypass` in the input color space dropdown and you are good to go. In this case, NamiColor will not perform any color space transform, but will still do the linear to Cineon scaling.
+  In this case, NamiColor should also be your first node. Select `bypass` in the input color space dropdown and you are good to go. In this case, NamiColor will not perform any color space transform, but will still do the linear to Cineon scaling.
 
 - User managed: (I hope you know what you are doing)
 
-if your input image is neither, please still try to manage it somehow. You are using Resolve, not Photoshop. Manage your colors. Add any necessary CST, LUT, DCTL, dark magic, sorcery, or mango smoothie **before** NamiColor, and select `bypass` in the input color space dropdown. NamiColor will output the same color space as its input and hopefully Cineon Film Log.
+  If your input image is neither, please still try to manage it somehow. You are using Resolve, not Photoshop. Manage your colors. Add any necessary CST, LUT, DCTL, dark magic, sorcery, or mango smoothie **before** NamiColor, and select `bypass` in the input color space dropdown. NamiColor will output the same color space as its input and hopefully Cineon Film Log.
 
 
 ### Color Transforming Film Images
@@ -152,11 +152,9 @@ Either case will remain scene linear as long as the input is so.
 
 Having access to a highly linearlized scene-referred image also enables you to prepare an HDR output. If you have the correct working environment of dealing with HDR in Resolve, I trust that you already know what you are doing. Good luck.
 
-In most cases though, a single HDR wheels node and an ODT should suffice. If you don't already know, HDR wheels do not necessitate an HDR output, it just works well with scene-referred workflows such as what NamiColor provides.
+If you don't have a specific look in mind, using a camera's LUT (S-Log to s709, Log C to Arri 709, etc.) as the ODT will do your image justice by rendering a faithful representation of the scene. Just don't forget to adapt the LUT of your choice for Cineon/Rec. 2020. 
 
-Setup your ODT like you normally would. Just don't forget to adapt it for Cineon/Rec. 2020. 
-
-Most cameras' LUT would provide a reasonably faithful rendering of your film image, be it S-Log 3 to s709 or Log C to Arri 709, you know the deal. You may also opt for any looks of your preference. 
+Otherwise, setup your ODT like you normally would. 
 
 
 ### Scaling NamiColor
@@ -197,4 +195,4 @@ By setting each clip (assuming you are processing stills) to be 1 frame long, an
 - Cleaned up variables.
 
 ### RemoveColorMask
-- Initial concept by @github/OwenYou .
+- Initial concept by @OwenYou.
