@@ -6,20 +6,24 @@ NamiColor is designed to allow you to take full ownership of your film images.
 
 Like digital sensors, film is nothing but a device of acquisition. In either format, the acquisition device captures and transports a slice of the scene in an intermediate form. Given that this intermediate image retains enough resolution, dynamic range, and color, it grants the possibility of being transformed into any desired look. 
 
-With that being said, film in and of itself, is not an end, but merely means to it. Obviously, different emulsions and different filmstocks can *influence* the final image, but should by no way, shape, or form *determine* your looks. 
+With that being said, film in and of itself, is not an end, but merely means to it. Obviously, different emulsions and filmstocks can *influence* the final image, but should by no way, shape, or form *determine* your looks. 
 
-To make film sufficiently workable in post, the scan needs to be transformed from transmission to density, and to have its channels aligned, all while maintaining scene-linearity. NamiColor is designed to do just that by acting as an ingest node for scanned film images. 
+To make film sufficiently workable in post, the scan needs to be transformed from transmittance to density, and to have its channels aligned, all while maintaining scene-linearity. NamiColor is designed to do just that by acting as an ingest node for scanned film images. 
 
-By linearizing film in the density domain, NamiColor also removes the guesswork in traditional workflows. There will be no more fiddling with finding the gray point. Having Resolve as its host application also allows NamiColor to be extremely scalable, suitable for dealing with an obscene amounts of film scans. 
+By linearizing film in the density domain, NamiColor also removes the guesswork in traditional workflows, especially finding gray points. Having Resolve as its host application also allows NamiColor to be extremely scalable, suitable for dealing with an obscene amounts of film scans. 
 
 
 ## How NamiColor Works
 
-Film scanners (flatbed or camera) measure transmission, not directly density. To work in density domain, a log<sub>10</sub> scaling is required.
+Film scanners (flatbed or camera) measure transmittance, not directly density. To work in the density domain, NamiColor performs a log<sub>10</sub> on the input. 
 
-On most films' datasheets, you would usually find a characteristic curve like the one below. Note that the linear portion of each channel are in fact straight, and is only offset from each other by some amount in log<sub>10</sub> space. 
+Working in the density domain also significantly simplifies the channel alignment process. On most films' datasheets, you would usually find a characteristic curve like the one below. Note that the linear portion of each channel are in fact straight, and is only offset from each other by some amount in log<sub>10</sub> space. 
 
-This is not the case in linear/transmission space. 
+This is not the case in linear/transmittance space. The EOTF of each channel remain highly nonlinear, and is therefore very tricky to align. Conventional methods of channel alignment is essentially using gamma correction (power functions) to approximate logarithm maths. This could often be mathematically valid, but is undoubtly very finicky in practice. 
+
+After the log<sub>10</sub> scaling, NamiColor aligns the RGB with shift and gain controls. This part is rather straightforward. After alignment, the output would approximately be Cineon Film Log, and is ready for any further color grading.
+
+There are no secret sauce to NamiColor's maths. All of what NamiColor does can potentially be approximated with Resolve's stock tools, but at the expense of using many more nodes, being more expensive to compute, and being a lot less flexible. One possible way of approximating NamiColor with stock tools could be performing input management with CSTs and LUTs, and then using LGG wheels to align each channel, should you lose your access to Resolve Studio or something.
 
 
 ## Using NamiColor
@@ -28,7 +32,7 @@ This is not the case in linear/transmission space.
 
 NamiColor is not a compute-intensive script. It does not ask for more compute power than applying a LUT or two. Given the resolution of most film scans, NamiColor should run on most mainstream hardwares from the past couple of years.
 
-Even for very high resolution inputs, realtime rendering requirements should be low enough to run on most mainstream-ish hardwares. If you are dealing with motion pictures, then it's rather likely that their resolutions would be low enough to not impose a problem.
+Even for very high resolution inputs, realtime rendering requirements should be low enough to be usable. If you are dealing with motion pictures, then it's rather likely that their resolutions would be low enough to not impose a problem.
 
 However, by Resolve's nature of loading entire chunks of the timeline into the VRAM, using Resolve to color transform film scans will be very memory intensive regardless of using NamiColor or not.
 
@@ -36,7 +40,7 @@ However, by Resolve's nature of loading entire chunks of the timeline into the V
 - For 120 scans (40-60MP), 12-16GB is recommended.
 - If you are shooting large formats (100-200MP) at this day and age, I am assuming you can afford a GPU with at least 24GB of VRAM.
 
-Being an DCTL script, NamiColor will require DaVinci Resolve Studio to run. It is tested to be compatible with Resolve 17 and later.
+Being an DCTL script, NamiColor will require DaVinci Resolve Studio to run. It has been tested to be compatible with Resolve 17 and later.
 
 
 ### Installation
@@ -63,10 +67,13 @@ If you are using a dedicated film scanner, you are pretty much good to go. The D
 
 If you are using a camera to scan your film, things are about to get trickier. This is a result of Resolve's inherent inability to natively decode most stills cameras' raw files, and there is not much NamiColor can do to help. I would recommend converting your raw into linear TIFFs or EXRs using LibRaw (commandline LibRaw, RawDigger, Affinity Photo, etc.). 
 
-You may also want to set your timeline to be an appropriate resolution and aspect ratio.
+You may also want to set your timeline to be an appropriate resolution and aspect ratio at this point.
 
 > [!CAUTION]
 > TIFFs exported by Lightroom CC/Classic and Adobe Camera Raw **are NOT scene linear**. Not even the HDR ones. NEVER use Lr and ACR to prepare your digital intermediates. 
+
+> [!CAUTION]
+> If you convert FFFs into TIFFs by simply changing its extensions, it would remain in your Flextight's raw gamut and not any formal color space. Although managing these TIFFs as Adobe RGB would often give visually reasonable results, such practice still remain technically incorrect. 
 
 
 ### Setting up NamiColor
@@ -75,11 +82,19 @@ NamiColor should act like your IDT node.
 
 Select a corresponding processing mode. `Negatives` and `Reversals` should be rather self explanatory. `Log-to-Log` bypasses both the inversion and the log<sub>10</sub> scaling. Only use `Log-to-Log` if you are very sure what you are doing.
 
-If your input image is in a color space NamiColor knows how to manage (Adobe RGB and ProPhoto RGB), then NamiColor should be your first node. Select the corresponding color space in the input color space dropdown. In this case, NamiColor will output Rec. 2020, make sure any subsequent nodes and the ODT are configured for that.
+NamiColor can manage the input in 3 ways.
 
-If your input image is in a color space native to Resolve (ACES, Rec. 2020, P3, sRGB, etc.), NamiColor should also be your first node. Select `bypass` in the input color space dropdown and you are good to go. In this case, NamiColor will not perform any color space transform. Any subsquent nodes and the ODT should be configured for the same color space as the input. 
+- NamiColor managed: Adobe RGB/ProPhoto RGB & linear input, Rec. 2020 & Cineon output. 
 
-If your input image is neither, please still try to manage it somehow. You are using Resolve, not Photoshop. Manage your colors. Add any necessary CST, LUT, DCTL, dark magic, sorcery, or mango smoothie **before** NamiColor, and select `bypass` in the input color space dropdown. 
+If your input image is linear and in a color space NamiColor knows how to manage, then NamiColor should be your first node. Simply select the corresponding color space in the input color space dropdown. 
+
+- Resolve managed: Resolve-native color space (ACES, Rec. 2020, P3, sRGB, etc.) & linear input, outputs same color space as input & Cineon Film Log.
+
+In this case, NamiColor should also be your first node. Select `bypass` in the input color space dropdown and you are good to go. In this case, NamiColor will not perform any color space transform, but will still do the linear to Cineon scaling.
+
+- User managed: (I hope you know what you are doing)
+
+if your input image is neither, please still try to manage it somehow. You are using Resolve, not Photoshop. Manage your colors. Add any necessary CST, LUT, DCTL, dark magic, sorcery, or mango smoothie **before** NamiColor, and select `bypass` in the input color space dropdown. NamiColor will output the same color space as its input and hopefully Cineon Film Log.
 
 
 ### Color Transforming Film Images
@@ -154,6 +169,11 @@ By setting each clip (assuming you are processing stills) to be 1 frame long, an
 
 
 ## Changelog
+### Upcoming
+- Integrate `gamma 2.2` input transform.
+- More flexible color space transform options.
+- Code refactor, split main function into modularized ones.
+
 ### NamiColor 3.0
 - Integrated Adobe RGB and ProPhoto RGB to Rec. 2020 transform options at import.
 
@@ -177,4 +197,4 @@ By setting each clip (assuming you are processing stills) to be 1 frame long, an
 - Cleaned up variables.
 
 ### RemoveColorMask
-- Initial concept by @OwenYou .
+- Initial concept by @github/OwenYou .
