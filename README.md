@@ -2,7 +2,7 @@
 
 ## What NamiColor Does
 
-NamiColor is designed to allow you to take full ownership of your film images.
+NamiColor enables you to take full ownership of your film images.
 
 Like digital sensors, film is nothing but a device of acquisition. In either format, the acquisition device captures and transports a slice of the scene in an intermediate form. Given that this intermediate image retains enough resolution, dynamic range, and color, it grants the possibility of being transformed into any desired look. 
 
@@ -164,6 +164,9 @@ Owning to Resolve's nature of being designed with large productions in mind, Nam
 Copy your grades from clip to clip as you normally would, or you can also setup NamiColor on an adjustment layer, and let it span multiple clips. Like other methods of color transforming film scans, the same NamiColor settings should be applicable to multiple clips of the same emulsion, similar lighting and exposure conditions, and similar processing environments. The difference is that you have access to multiple frames, even multiple strips of your film scans on the same timeline.
 
 By setting each clip (assuming you are processing stills) to be 1 frame long, and by rendering the timeline as TIFF sequences, a single NamiColor setup can potentially service hundreds of frames across multiple rolls. 
+
+> [!NOTE]
+> The more clips that are loaded into the active timeline, the more VRAM Resolve will consume. Scale at your own GPU's risk.
 
 
 ## Changelog
