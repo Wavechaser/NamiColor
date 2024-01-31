@@ -23,6 +23,8 @@ This is not the case in linear/transmittance space. The EOTF of each channel rem
 
 After the log<sub>10</sub> scaling, NamiColor aligns the RGB with shift and gain controls. This part is rather straightforward. After alignment, the output would approximately be Cineon Film Log, and is ready for any further color grading.
 
+![NamiColor Workflow](https://github.com/Wavechaser/NamiColor/assets/8845849/07cefccc-9f07-4220-99eb-067b649328f0)
+
 There are no secret sauce to NamiColor's maths. All of what NamiColor does can potentially be approximated with Resolve's stock tools, but at the expense of using many more nodes, being more expensive to compute, and being a lot less flexible. One possible way of approximating NamiColor with stock tools could be performing input management with CSTs and LUTs, and then using LGG wheels to align each channel, should you lose your access to Resolve Studio or something.
 
 
