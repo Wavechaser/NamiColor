@@ -21,7 +21,7 @@ Working in the density domain also significantly simplifies the channel alignmen
 
 This is not the case in linear/transmittance space. The EOTF of each channel remain highly nonlinear, and is therefore very tricky to align. Conventional methods of channel alignment is essentially using gamma correction (power functions) to approximate logarithm maths. This could often be mathematically valid, but is undoubtly very finicky in practice. 
 
-![transmittance vs density](https://github.com/Wavechaser/NamiColor/assets/8845849/df9621bf-d913-4e4b-9285-dd1d2128c451)
+![transmittance vs density](https://github.com/Wavechaser/NamiColor/assets/8845849/6e066f72-1c84-4adf-977a-892ca16e15d5)
 
 After the log<sub>10</sub> scaling, NamiColor aligns the RGB with shift and gain controls. This part is rather straightforward. 
 
