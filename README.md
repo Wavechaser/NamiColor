@@ -17,19 +17,19 @@ By linearizing film in the density domain, NamiColor also removes the guesswork 
 
 Film scanners (flatbed or camera) measure transmittance, not directly density. To work in the density domain, NamiColor performs a log<sub>10</sub> on the input. 
 
-Working in the density domain also significantly simplifies the channel alignment process. On most films' datasheets, you would usually find a characteristic curve like the one below. Note that the linear portion of each channel are in fact straight, and is only offset from each other by some amount in log<sub>10</sub> space. 
+Working in the density domain also significantly simplifies the channel alignment process. On most films' datasheets, you would usually find a characteristic curve like the one below (middle), described in the log density domain. Note that the linear portion of each channel are in fact straight, and are only offset from each other by some amount. 
 
-This is not the case in linear/transmittance space. The EOTF of each channel remain highly nonlinear, and is therefore very tricky to align. Conventional methods of channel alignment is essentially using gamma correction (power functions) to approximate logarithm maths. This could often be mathematically valid, but is undoubtly very finicky in practice. 
+This is not the case in linear/transmittance domain. Each channel has notably different curvature and range, and is therefore very tricky to align. Conventional methods of channel alignment are essentially using gamma correction (i.e., power functions) to approximate logarithm maths. This could often be mathematically valid, but is undoubtly very finicky in practice. 
 
-![transmittance vs density](https://github.com/Wavechaser/NamiColor/assets/8845849/6e066f72-1c84-4adf-977a-892ca16e15d5)
+![transmittance vs density vs cineon](https://github.com/Wavechaser/NamiColor/assets/8845849/ccfe3f78-d739-46ce-b1c1-d8873614b837)
 
 After the log<sub>10</sub> scaling, NamiColor aligns the RGB with shift and gain controls. This part is rather straightforward. 
 
 After alignment, the output would approximately be Cineon Film Log, and is ready for any further color grading.
 
-![NamiColor Workflow](https://github.com/Wavechaser/NamiColor/assets/8845849/07cefccc-9f07-4220-99eb-067b649328f0)
+![NamiColor Pipeline](https://github.com/Wavechaser/NamiColor/assets/8845849/62ba2e02-ba31-4625-a4fa-d59fe3b492bd)
 
-There are no secret sauce to NamiColor's maths. All of what NamiColor does can potentially be approximated with Resolve's stock tools, but at the expense of using many more nodes, being more expensive to compute, and being a lot less flexible. One possible way of approximating NamiColor with stock tools could be performing input management with CSTs and LUTs, and then using LGG wheels to align each channel, should you lose your access to Resolve Studio or something.
+There are no secret sauce to NamiColor's maths. All of what NamiColor does can potentially be approximated with Resolve's stock tools, but at the expense of using many more nodes, being more expensive to compute, and being a lot less flexible. To a large extent, the mindset and knowing what to do is more important than the toolset.
 
 
 ## Using NamiColor
@@ -79,7 +79,7 @@ You may also want to set your timeline to be an appropriate resolution and aspec
 > TIFFs exported by Lightroom CC/Classic and Adobe Camera Raw **are NOT scene linear**. Not even the HDR ones. NEVER use Lr and ACR to prepare your digital intermediates. 
 
 > [!CAUTION]
-> If you convert FFFs into TIFFs by simply changing its extensions, it would remain in your Flextight's raw gamut and not any formal color space. Although managing these TIFFs as Adobe RGB would often give visually reasonable results, such practice still remain technically incorrect. 
+> If you convert FFFs into TIFFs by simply changing its extensions, it would remain in your Flextight's raw gamut and not any formal color space. Please convert your FFFs to TIFFs using FlexColor.
 
 
 ### Setting up NamiColor
