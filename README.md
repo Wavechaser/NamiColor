@@ -34,7 +34,7 @@ There are no secret sauce to NamiColor's maths. All of what NamiColor does can p
 
 ## Using NamiColor
 
-### Recommeneded Hardware
+### Recommended Hardware
 
 NamiColor is not a compute-intensive script. It does not ask for more compute power than applying a LUT or two. Given the resolution of most film scans, NamiColor should run on most mainstream hardwares from the past couple of years.
 
@@ -136,7 +136,7 @@ There are no single correct way of aligning your RGB channels. I personally reco
 
 Use common sense when aligning channels. Finding a relatively neutral black and highlight point is highly recommended, even if it may not be imperative. For example, if your highlight is the sky, you would not want that to be your alignment reference, or else everything would look very yellow. You would want to find another reference for that. The good thing is, even if you can't find a reasonable highlight/black reference in a frame, setups from other frames on the same roll with similar lighting conditions would likely be usable. Just copy your grades.
 
-You may continue to fine tune each channel's `blackpoint` and `gain` to get a more reasonable result. Especially for negatives where the B channel/Y dye layer tends to have the steepest curve and least SNR, pulling `B Blackpoint` slighly below that of R and G channels' tend to yield more balanced shadows.
+You may continue to fine tune each channel's `blackpoint` and `gain` to get a more reasonable result. Especially for negatives where the B channel/Y dye layer tends to have the steepest curve and least SNR, pulling `B Blackpoint` slightly below that of R and G channels' tend to yield more balanced shadows.
 
 You are done after the blackpoints and whitepoints of each channel are aligned. There is no finding gray point.
 
